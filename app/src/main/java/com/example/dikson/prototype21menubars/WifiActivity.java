@@ -62,7 +62,7 @@ public class WifiActivity extends AppCompatActivity {
     Runnable runnable;
     EditText input;
     Spinner spinner;
-    boolean isEduroamFiltered = false;
+    boolean isEduroamFiltered = true;
 
     //------------------------Location-------------------------
     private final static int ALL_PERMISSIONS_RESULT = 101;
@@ -106,7 +106,7 @@ public class WifiActivity extends AppCompatActivity {
                         drawerLayout.closeDrawers();
                         break;
 
-                    case R.id.I_F3:
+                    case R.id.I_F3A:
                         Intent F3 = new Intent(WifiActivity.this, MainActivity.class);
                         startActivity(F3);
                         //Closes the drawer when item is selected
@@ -253,6 +253,7 @@ public class WifiActivity extends AppCompatActivity {
 
             case R.id.I_ListAvailable:
                 isEduroamFiltered = false;
+                scanWifi();
                 return true;
 
             case R.id.I_GPS:
