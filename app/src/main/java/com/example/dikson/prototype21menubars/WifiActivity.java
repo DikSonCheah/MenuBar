@@ -15,6 +15,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.Message;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
@@ -24,6 +25,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.JsonWriter;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -37,10 +39,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,6 +69,7 @@ public class WifiActivity extends AppCompatActivity {
     Runnable runnable;
     EditText input;
     Spinner spinner;
+    StringBuilder wifisb;
     boolean isEduroamFiltered = true;
 
     //------------------------Location-------------------------
@@ -78,7 +86,7 @@ public class WifiActivity extends AppCompatActivity {
 
     boolean canGetLocation = true;
 
-    TextView LongitudeValue,LatitudeValue;
+    TextView LongitudeValue, LatitudeValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,8 +140,9 @@ public class WifiActivity extends AppCompatActivity {
         runnable = new Runnable() {
             @Override
             public void run() {
-                handler.postDelayed(this, 4000);
+                handler.postDelayed(this, 3000);
                 scanWifi();
+//                updateUI(location);
             }
         };
         handler.post(runnable);
@@ -215,8 +224,7 @@ public class WifiActivity extends AppCompatActivity {
 //enables the menu button to be clicked
 
             case android.R.id.home:
-                Intent intent = new Intent(WifiActivity.this, MainActivity.class);
-                startActivity(intent);
+                onBackPressed();
                 return true;
 
             case R.id.I_Comment:
@@ -287,12 +295,11 @@ public class WifiActivity extends AppCompatActivity {
                 GPSDialog.create().show();
 
 
-
                 return true;
 
 
         }
-        updateUI(location);
+//        updateUI(location);
 
         return super.onOptionsItemSelected(item);
 
@@ -354,6 +361,7 @@ public class WifiActivity extends AppCompatActivity {
 
     public void setFilter() {
         int count = 0;
+        wifisb = new StringBuilder();
         for (int i = 0; i < scanResults.size(); i++) {
             String wifiSSID = scanResults.get(i).SSID;
             if (wifiSSID.equals("eduroam")) {
@@ -371,6 +379,7 @@ public class WifiActivity extends AppCompatActivity {
                 availableWifiList[count] = ("SSID: " + scanResults.get(i).SSID
                         + "\nBSSID: " + scanResults.get(i).BSSID
                         + "\nRSSI: " + scanResults.get(i).level + "dBm");
+                wifisb.append("," + scanResults.get(i).BSSID + "," + scanResults.get(i).level);
                 count++;
             }
         }
@@ -382,6 +391,7 @@ public class WifiActivity extends AppCompatActivity {
         //FYP BOOK
         String getRemark;
         String getSpinner;
+
 
         String x, y, z;
         EditText ET_x, ET_y, ET_z;
@@ -398,21 +408,49 @@ public class WifiActivity extends AppCompatActivity {
         getRemark = input.getText().toString();
         getSpinner = spinner.getSelectedItem().toString();
 
-
-
         try {
-            FileOutputStream fos = new FileOutputStream(new File(getFilesDir(), "CollectedData.csv"));
-            File file = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
-            String filePath = file.getAbsolutePath() + "/CollectedData.csv";
-            BufferedWriter writer = new BufferedWriter(new FileWriter(filePath, true));
+//            FileOutputStream fos = new FileOutputStream(new File(getFilesDir(), "CollectedData.json"));
+            File file1 = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            String filePath1 = file1.getAbsolutePath() + "/CollectedData.json";
+            BufferedWriter writer1 = new BufferedWriter(new FileWriter(filePath1, true));
+
+            JsonWriter jsonWriter = new JsonWriter(new FileWriter(filePath1, true));
+            jsonWriter.setIndent("  ");
 
 
-            sb.append(latitude + "," + longitude + "," + x + "," + y +","
-                    + z + "," + timeStamp + "," + getSpinner + getRemark);
+            jsonWriter.beginObject();
+            jsonWriter.name("dataset:").value("DikSon_2");
+            jsonWriter.name("X").value(x);
+            jsonWriter.name("Y").value(y);
+            jsonWriter.name("Z").value(z);
+            jsonWriter.name("timestamp:").value(timeStamp);
+            jsonWriter.name("tag:").value(getSpinner+getRemark);
+            jsonWriter.name("dims:");
+            jsonWriter.beginObject();
 
-            for (int i = 0; i < bssidList.length; i++) {
-                sb.append("," + scanResults.get(i).SSID + " " + scanResults.get(i).BSSID + " " + scanResults.get(i).level);
+            for(int i=0; i<scanResults.size() ;i++)
+            {
+                String wifiID = scanResults.get(i).SSID;
+                if (wifiID.equals("eduroam"))
+                {
+                    jsonWriter.name(scanResults.get(i).BSSID).value(scanResults.get(i).level);
+                }
+
             }
+
+            jsonWriter.endObject();
+            jsonWriter.endObject();
+            writer1.append(",");
+            writer1.close();
+            jsonWriter.close();
+
+//            FileOutputStream fos2 = new FileOutputStream(new File(getFilesDir(), "CollectedData.csv"));
+            File file2 = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+            String filePath2 = file2.getAbsolutePath() + "/CollectedData.csv";
+            BufferedWriter writer = new BufferedWriter(new FileWriter(filePath2, true));
+
+            sb.append("DikSon_2" + "," + x + "," + y + "," + z + "," + timeStamp + "," + getSpinner + getRemark + wifisb);
+
             sb.append("\n");
 
             writer.append(sb.toString());
@@ -423,6 +461,7 @@ public class WifiActivity extends AppCompatActivity {
         }
 
     }
+
 
     //--------------------------------------Location----------------------------------------------------
     LocationListener locationListener = new LocationListener() {
