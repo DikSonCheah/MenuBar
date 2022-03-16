@@ -2,7 +2,7 @@ name: Old Branch Reminder
 on:
   schedule:
     # Run every day at 9 am.
-    - cron:  '*/5 * * * *'
+    - cron:  '30 07 * * *'
 
 jobs:
   build:
