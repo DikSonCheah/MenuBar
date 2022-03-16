@@ -2,15 +2,14 @@ name: Old Branch Reminder
 on:
   schedule:
     # Run every day at 9 am.
-    - cron:  '30 6 * * *'
+    - cron:  '35 14 * * *'
 
 
   workflow_dispatch:
 
 
 jobs:
-  remind:
-    name: Old Branch Reminder
+  build:
     runs-on: ubuntu-latest
     steps:
     - name: Old Branch Reminder
