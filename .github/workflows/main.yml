@@ -2,11 +2,7 @@ name: Old Branch Reminder
 on:
   schedule:
     # Run every day at 9 am.
-    - cron:  '35 14 * * *'
-
-
-  workflow_dispatch:
-
+    - cron:  '40 6 * * *'
 
 jobs:
   build:
