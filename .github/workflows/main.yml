@@ -6,4 +6,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Dump GitHub context
-        run: echo $github.api_url
+        run: echo ${{ github.api_url }}
