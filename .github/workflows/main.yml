@@ -11,5 +11,7 @@ jobs:
       - name: checkout
         uses: actions/checkout@v3
       - name: check log
-        run: python test.py
+        run: ls -la
+      - name: check pwd
+        run: pwd
 
