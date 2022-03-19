@@ -19,6 +19,6 @@ jobs:
       - name: installing python Github API
         run: pip install PyGithub
       - name: running script 
-        run: python test.py  
+        run: python test.py ${{ env.token }}
 
 
