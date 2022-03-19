@@ -1,6 +1,8 @@
 name: Context testing
 on: [push,workflow_dispatch]
 
+env:
+  token: ${{ secrets.GITHUB_TOKEN }}
   
 jobs:
   create_commit:
@@ -8,11 +10,15 @@ jobs:
     permissions:
       issues: write 
     steps:
+      - name: check1
+        run: echo $ {{ env.token }}
       - name: checkout
         uses: actions/checkout@v3
+      - name: check2
+        run: echo ${{ env.token }}
       - name: installing python Github API
         run: pip install PyGithub
       - name: running script 
-        run: python test.py $ {{ secrets.GITHUB_TOKEN }}
+        run: python test.py  
 
 
