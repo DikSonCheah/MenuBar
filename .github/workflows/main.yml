@@ -10,15 +10,11 @@ jobs:
     permissions:
       issues: write 
     steps:
-      - name: check1
-        run: echo $ {{ env.token }}
       - name: checkout
         uses: actions/checkout@v3
-      - name: check2
-        run: echo ${{ env.token }}
       - name: installing python Github API
         run: pip install PyGithub
       - name: running script 
-        run: python test.py ${{ env.token }}
+        run: python test.py 
 
 
