@@ -1,4 +1,5 @@
 import argparse
+import os
 from github import Github
 
 
@@ -16,9 +17,11 @@ def create_issue(token):
 
 
 def main():
+    print(os.environ.get("token"))
     args = arguments()
-    create_issue(args.token)
+    create_issue(os.environ.get("token"))
 
 
 if __name__ == "__main__":
     main()
+
