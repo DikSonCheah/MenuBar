@@ -3,12 +3,6 @@ import os
 from github import Github
 
 
-def arguments():
-    parser = argparse.ArgumentParser()
-    parser.add_argument("token", help="Github authentication token")
-    args = parser.parse_args()
-    return args
-
 
 def create_issue(token):
     g = Github()
@@ -18,7 +12,6 @@ def create_issue(token):
 
 def main():
     print(os.environ.get("token"))
-    args = arguments()
     create_issue(os.environ.get("token"))
 
 
