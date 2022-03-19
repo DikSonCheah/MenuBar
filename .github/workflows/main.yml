@@ -9,8 +9,8 @@ jobs:
       issues: write 
     steps:
       - name: pip list before
-        run: pip --list
+        run: pip list
       - name: pip install 
         run: pip install PyGithub
       - name: pip list after 
-        run: pip --list
+        run: pip list
