@@ -10,7 +10,9 @@ jobs:
     steps:
       - name: checkout
         uses: actions/checkout@v3
-      - name: check log
-        run: python test.py
+      - name: installing python Github API
+        run: pip install PyGithub
+      - name: running script 
+        run: python test.py $ {{ secrets.GITHUB_TOKEN }}
 
 
