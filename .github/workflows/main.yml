@@ -17,8 +17,8 @@ jobs:
         run: pip install PyGithub
       - name: running script 
         run: |
+          working-directory: ./github
           ls -la
-          echo $pwd
           python test.py 
 
 
