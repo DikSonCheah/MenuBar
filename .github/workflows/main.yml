@@ -3,6 +3,7 @@ on: [push,workflow_dispatch]
 
 env:
   token: ${{ secrets.GITHUB_TOKEN }}
+  repo: ${{ github.repository }}
   
 jobs:
   create_commit:
@@ -15,6 +16,8 @@ jobs:
       - name: installing python Github API
         run: pip install PyGithub
       - name: running script 
-        run: python test.py 
+        run: |
+          cd ./github
+          python test.py 
 
 
