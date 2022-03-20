@@ -16,7 +16,7 @@ jobs:
       - name: installing python Github API
         run: pip install PyGithub
       - name: running script 
-        working-directory: ./github
+        working-directory: .github
         run: |
           ls -la
           python test.py 
