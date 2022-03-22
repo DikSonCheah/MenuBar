@@ -1,1 +1,1 @@
-# If you're happy and you know it suck my dick
+# This user is too lazy to put a readme file.
